@@ -38,6 +38,16 @@ class PongBall(Widget):
 
     def move(self):
         self.pos = Vector(*self.velocity) + self.pos
+        print("test")
+        print("test")
+        print("test")
+        print("test")
+        print("test")
+        print("test")
+        print("test")
+        print("test")
+        print("test")
+        print("test")
 
 
 class PongGame(Widget):
