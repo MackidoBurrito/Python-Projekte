@@ -67,7 +67,6 @@ class PongGame(Widget):
         w = random.uniform(200.0, Window.size[0] - 200.0)
         h = random.uniform(50.0, Window.size[1] - 50)
         self.spawn.center = [w, h]
-        print("test")
 
     def update(self, dt):
         self.ball.move()
