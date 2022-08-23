@@ -1,0 +1,134 @@
+#:kivy 1.0.9
+<PongBall>:
+    size: 200, 200
+    canvas:
+        PushMatrix
+        Rotate:
+            axis: 0, 0, 1
+            angle: self.angle
+            origin: self.pos[0]+100, self.pos[1]+100
+        Color:
+            rgba: (250/255, 100/255, 215/255, 1)
+        Ellipse:
+            source:"/home/mgrziwa/Downloads/The_real_Nic_Cage_Ball.jpg"
+            pos: self.pos
+            size: self.size
+        PopMatrix
+
+<PowerUp>:
+    size: 100, 100
+    canvas:
+        Color:
+            rgba: (255/255, 255/255, 0/255, 1)
+        Ellipse:
+            source:"/home/mgrziwa/Downloads/Nic_Cage_PowerUp.jpg"
+            pos: self.pos
+            size: self.size
+
+
+
+<PongPaddle>:
+    size: 51, 200
+    canvas:
+        Color:
+            rgba: (255/255, 0/255, 0/255, 1)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+<PongGame>:
+    ball: pong_ball
+    player1: player_left
+    player2: player_right
+    spawn: spawn_items
+
+    canvas:
+        Color:
+            rgba: (130/255, 215/255, 255/255, 1)
+        Rectangle:
+            pos: 0,0
+            size: self.width, self.height
+        Color:
+            rgba: (255/255, 0/255, 220/255,1)
+        Rectangle:
+            pos: self.center_x - 5, 0
+            size: 10, self.height
+        Color:
+            rgba: (255/255, 0/255, 220/255,1)
+        Rectangle:
+            pos: 0, 0
+            size: self.width, 5
+        Color:
+            rgba: (255/255, 0/255, 220/255,1)
+        Rectangle:
+            pos: 0, root.top - 5
+            size: self.width, 5
+        Color:
+            rgba: (255/255, 0/255, 220/255,1)
+        Rectangle:
+            pos: 0, 0
+            size: 5, self.height
+        Color:
+            rgba: (255/255, 0/255, 220/255,1)
+        Rectangle:
+            pos: root.width - 5, 0
+            size: 5, self.height
+        Color:
+            rgba: (70/255, 255/255, 10/255,1)
+        Rectangle:
+            pos: self.center_x - 100, self.center_y
+            size: 200, 5
+        PushMatrix
+        Rotate:
+            axis: 0, 0, 1
+            angle: -45
+            origin: self.center_x -75, self.center_y + 75
+        Color:
+            rgba: (70/255, 255/255, 10/255,1)
+        Rectangle:
+            pos: self.center_x -75, self.center_y + 75
+            size: 212, 5
+        PopMatrix
+        PushMatrix
+        Rotate:
+            axis: 0, 0, 1
+            angle: 45
+            origin: self.center_x -75, self.center_y - 75
+        Color:
+            rgba: (70/255, 255/255, 10/255,1)
+        Rectangle:
+            pos: self.center_x -75, self.center_y - 75
+            size: 212, 5
+        PopMatrix
+
+    Label:
+        color: 60/255, 255/255, 0/255,1
+        font_size: 70
+        center_x: root.width / 4
+        top: root.top - 50
+        text: str(root.player1.score)
+
+    Label:
+        color: 240/255, 255/255, 100/255,1
+        font_size: 70
+        center_x: root.width * 3 / 4
+        top: root.top - 50
+        text: str(root.player2.score)
+
+    PongBall:
+        id: pong_ball
+        center: self.parent.center
+
+    PongPaddle:
+        id: player_left
+        x: root.x
+        center_y: root.center_y
+
+    PongPaddle:
+        id: player_right
+        x: root.width - self.width
+        center_y: root.center_y
+
+    PowerUp:
+        id: spawn_items
+        center: self.center
