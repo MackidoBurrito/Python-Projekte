@@ -16,9 +16,9 @@ class PongPaddle(Widget):
     def bounce_ball(self, ball):
         if self.collide_widget(ball):
             vx, vy = ball.velocity
-            offset = (ball.center_y - self.center_y) / (self.height / 20)
+            offset = (ball.center_y - self.center_y) / (self.height / 16)
             bounced = Vector(-1 * vx, vy)
-            vel = bounced * 1.5
+            vel = bounced * 1.2
             if vel.x <= -50:
                 vel.x = -50
             if vel.x >= 50:
@@ -33,11 +33,9 @@ class PongPaddle(Widget):
 class PowerUp(Widget):
     spawn = NumericProperty(0)
 
-    def spawn_powerup(self, spawn):
-        spawn.spawned = 0
-        if spawn.spawned <= 0:
-            spawn.spawned == 1
-            print("PowerUP Spawned")
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.pos = (-1000, -1000)
 
 
 class PongBall(Widget):
@@ -59,16 +57,30 @@ class PongGame(Widget):
     player1 = ObjectProperty(None)
     player2 = ObjectProperty(None)
 
+    PowerUp_variation = 0
+    spawned = False
+    item_in_use = False
+    old_window_size = (Window.size[0], Window.size[1])
+    itemcooldown = random.randrange(180, 1000)
+
     def serve_ball(self, vel=(8, 0)):
         self.ball.center = self.center
         self.ball.velocity = vel
 
+    # spawn items
     def serve_items(self):
+        self.PowerUp_variation = random.randrange(0, 2)
         w = random.uniform(200.0, Window.size[0] - 200.0)
         h = random.uniform(50.0, Window.size[1] - 50)
-        self.spawn.center = [w, h]
+        if self.PowerUp_variation == 0:
+            self.spawn.color = (20 / 255, 1, 0, 1)
+            self.spawn.center = [w, h]
+        else:
+            self.spawn.color = (160 / 255, 0, 0, 1)
+            self.spawn.center = [w, h]
+        self.spawned = True
 
-    def update(self, dt):
+    def update_ball(self):
         self.ball.move()
 
         # rotation
@@ -92,20 +104,72 @@ class PongGame(Widget):
         # went of to a side to score point?
         if self.ball.x < self.x:
             self.player2.score += 1
+            self.player2.size = (51, 200)
+            self.player2.size = (51, 200)
             self.serve_ball(vel=(8, 0))
         if self.ball.right > self.width:
             self.player1.score += 1
+            self.player1.size = (51, 200)
+            self.player2.size = (51, 200)
             self.serve_ball(vel=(-8, 0))
 
+    def update_players(self):
         # move pedals automatically
-        randomnr = random.randrange(-75, 75)
+        randrange_p1_1 = (self.player1.size[1] / 2 - 10) * -1
+        randrange_p1_2 = self.player1.size[1] / 2 - 10
+        randomnr = random.randrange(randrange_p1_1, randrange_p1_2)
         self.player1.center_y = self.ball.center_y + randomnr
-        randomnr2 = random.randrange(-75, 75)
+        randrange_p2_1 = (self.player2.size[1] / 2 - 10) * -1
+        randrange_p2_2 = self.player2.size[1] / 2 - 10
+        randomnr2 = random.randrange(randrange_p2_1, randrange_p2_2)
         self.player2.center_y = self.ball.center_y + randomnr2
 
+    def update_item(self, item):
         # automatic power ups spawn
-        if random.randrange(0, 100) == 0:
+        if self.itemcooldown == 0 and not self.spawned:
             self.serve_items()
+        if self.itemcooldown > 0:
+            self.itemcooldown -= 1
+        # check if item has been collected
+        if self.PowerUp_variation == 0:
+            if self.ball.collide_widget(item):
+                item.pos = (-1000, -1000)
+                self.item_in_use = True
+                self.spawned = False
+                if self.ball.velocity_x > 0:
+                    self.player1.size = (51, 300)
+                else:
+                    self.player2.size = (51, 300)
+                self.itemcooldown = random.randrange(180, 1000)
+        else:
+            if self.ball.collide_widget(item):
+                item.pos = (-1000, -1000)
+                self.item_in_use = True
+                self.spawned = False
+                if self.ball.velocity_x > 0:
+                    self.player1.size = (51, 50)
+                else:
+                    self.player2.size = (51, 50)
+                self.itemcooldown = random.randrange(180, 1000)
+
+        # check if window size is still correct
+        if not (self.old_window_size[0] == Window.size[0]):
+            if (self.old_window_size[1] == Window.size[1]):
+                scale_x = Window.size[0] / self.old_window_size[0]
+                scale_y = Window.size[1] / self.old_window_size[1]
+                self.old_window_size = (Window.size[0], Window.size[1])
+                new_x = self.spawn.center[0] * scale_x
+                new_y = self.spawn.center[1] * scale_y
+                self.spawn.center = [new_x, new_y]
+
+        print(self.spawn.center)
+        print(self.itemcooldown)
+        print(self.PowerUp_variation)
+
+    def update(self, dt):
+        self.update_ball()
+        self.update_players()
+        self.update_item(self.spawn)
 
 
 class PongApp(App):
