@@ -1,18 +1,27 @@
 def main():
-    Primzahlen = [1]
-    Eingabezahl = input("Bis wohin sollen Primzahlen berechnet werden: ")
-    if not Eingabezahl.isnumeric():
+    usernumber = input("Bis wohin sollen Primzahlen berechnet werden: ")
+    if not usernumber.isnumeric():
         print("Falsche Eingabe. Bitte Zahl eingeben")
+        return
     else:
-        Eingabezahl = int(Eingabezahl)
-        Eingabezahl -= 1
-        x = 1
-        while x <= Eingabezahl:
-            x += 1
-            Primzahlen.append(x)
-    print(Primzahlen)
-    return 5 % 2 == 0
-    print(Primzahlen)
+        usernumber = int(usernumber)
+    if usernumber >= 2:
+        numberrange = range(2, usernumber + 1, 1)
+    else:
+        print("Bitte Zahl über 1 eingeben")
+        return
+    for number in numberrange:
+        i = 2
+        isprime = True
+        while i <= number**0.5:
+            divisible = number % i == 0
+            i += 1
+            if divisible:
+                isprime = False
+                break
+        if isprime:
+            print(number)
 
 
-main()
+if __name__ == "__main__":
+    main()
