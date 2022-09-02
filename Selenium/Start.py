@@ -4,12 +4,12 @@ import time
 # SELENIUM
 from selenium.webdriver.common.by import By
 from selenium.webdriver import Firefox
+from selenium.webdriver.common.by import By
 
 
 def main():
     # get the webdriver
     browserDriver = Firefox()
-
     # go to google
     browserDriver.get('https://www.google.de')
 
@@ -24,6 +24,7 @@ def main():
     inputSearch.send_keys("do a barrel roll")
     # start the search by submitting the input
     inputSearch.submit()
+    
 
 
 if __name__ == '__main__':
