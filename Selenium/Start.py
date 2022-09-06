@@ -24,7 +24,6 @@ def main():
     inputSearch.send_keys("do a barrel roll")
     # start the search by submitting the input
     inputSearch.submit()
-    
 
 
 if __name__ == '__main__':
